@@ -1,0 +1,24 @@
+name: Mod the Hoople
+on:
+  pull_request:
+    types: [ opened, reopened, labeled ]
+
+jobs:
+  mod_cleaner:
+    runs-on: ubuntu-latest
+    name: A job to clean up go.mod/go.sum
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '^1.14.0'
+    - run: |
+          go mod tidy
+    - name: Action step
+      uses: ./
+      id: hello
+      with:
+        who-to-greet: 'Mona the Octocat'
+    # Use the output from the `hello` step
+    - name: Get the output time
+      run: echo "The time was ${{ steps.hello.outputs.time }}"
