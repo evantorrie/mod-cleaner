@@ -7,8 +7,9 @@ const process = require('process');
 async function run() {
     try {
         if (process.env["GITHUB_ACTIONS"]) {
-            console.log("Running inside a github action");
+            // console.log("Running inside a github action");
         }
+        // To test this from your dev box, use "env INPUT_FILES='<test_pattern>' node index.js"
         const filePatterns = core
               .getInput('files')
               .split("\n")
