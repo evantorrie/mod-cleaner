@@ -1,7 +1,7 @@
 name: Mod the Hoople
 on:
   pull_request:
-    types: [ opened, reopened, labeled ]
+    types: [ opened, reopened, labeled, unlabeled, edited, synchronize ]
 
 jobs:
   mod_cleaner:
@@ -12,6 +12,9 @@ jobs:
     - uses: actions/setup-go@v2
       with:
         go-version: '^1.14.0'
+    - name: mod-tidier
+      uses:  ./.github/actions/tidysum/
+      id: tidysum
     - name: go-sum
       run: |
           go mod tidy
