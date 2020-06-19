@@ -17,7 +17,7 @@ jobs:
       id: modtidy
       with:
         files: '**/go.mod'
-        gosum_only: true
+        gosum_only: false
     - name: go-sum
       run: |
           go mod tidy -v
