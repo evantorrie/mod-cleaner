@@ -2,8 +2,8 @@ name: Mod the Hoople
 on:
   pull_request:
     types: [ opened, reopened, labeled ]
-  tags:
-    - dependencies
+    tags:
+      - dependencies
 
 jobs:
   mod_cleaner:
