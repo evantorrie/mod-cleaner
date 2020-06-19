@@ -15,9 +15,10 @@ jobs:
     - name: mod-tidier
       uses:  ./.github/actions/tidysum/
       id: tidysum
-      input: |
-        go.mod
-        **/go.sum
+      with:
+        files: |
+            go.mod
+            **/go.sum
     - name: go-sum
       run: |
           go mod tidy
