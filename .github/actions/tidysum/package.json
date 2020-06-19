@@ -1,18 +1,24 @@
 {
   "name": "mod-cleaner",
   "version": "1.0.0",
-  "description": "",
+  "description": "Update go.sum files",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint index.js",
+    "package": "ncc build index.js -o dist",
+    "test": "eslint index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/evantorrie/mod-cleaner.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "GitHub",
+    "Go",
+    "Actions"
+  ],
+  "author": "EvanT",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/evantorrie/mod-cleaner/issues"
   },
@@ -20,7 +26,10 @@
   "dependencies": {
     "@actions/core": "^1.2.4",
     "@actions/exec": "^1.0.4",
-    "@actions/github": "^3.0.0",
     "@actions/glob": "^0.1.0"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.20.5",
+    "eslint": "^7.3.0"
   }
 }

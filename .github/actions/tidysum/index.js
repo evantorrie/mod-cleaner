@@ -1,32 +1,106 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
 const exec = require('@actions/exec');
 const glob = require('@actions/glob');
+const path = require('path');
+const process = require('process');
 
-try {
-  // `files` input defined in action metadata file
-    const files = core
-          .getInput('files')
-          .split("\n")
-          .filter(x => x !== "");
-    
-    console.log(`files input: ${files}!`);
-    const allFiles = findFiles(files);
-    const time = (new Date()).toTimeString();
-    core.setOutput("changedfiles", time);
-    // Get the JSON webhook payload for the event that triggered the workflow
-    const payload = JSON.stringify(github.context.payload, undefined, 2);
-    console.log(`\nThe event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
-}
-
-async function findFiles(patterns) {
-    for (const gomod of patterns) {
-        console.log(`gomod-pattern: ${gomod}`);
-        const globber = await glob.create(gomod);
-        const files = await globber.glob();
-        console.log(`expanded = ${files}`);
+async function run() {
+    try {
+        if (process.env["GITHUB_ACTIONS"]) {
+            console.log("Running inside a github action");
+        }
+        const filePatterns = core
+              .getInput('files')
+              .split("\n")
+              .map(s => s.trim())
+              .filter(s => s !== "");
+        let dirs = await findDirectories(filePatterns);
+        await gomodTidy(dirs);
+        let diffs = await checkGoSumOnly();
+        core.startGroup('Files with diffs');
+        for (const f of diffs) {
+            console.log(f);
+        }
+        core.endGroup();
+        const gosum_only = core.getInput('gosum_only');
+        if (gosum_only) {
+            // count number of files which end in go.sum
+            let gosums = diffs.filter(s => s.endsWith('go.sum'));
+            core.debug(`go.sums=${gosums}`);
+            if (diffs.length !== gosums.length) {
+                const msg = "Files other than go.sum were changed during go mod tidy!"; 
+                throw new Error(msg);
+            }
+        }
+    } catch (error) {
+        core.setFailed(error.message);
     }
 }
 
+run();
+
+async function gomodTidy(dirs) {
+    let p = [];
+    for (const d of dirs) {
+        core.debug(`${d}: go mod tidy`);
+        p.push(exec.exec('go', ['mod', 'tidy'], { cwd: d, silent: true }));
+    }
+    return await Promise.all(p);
+}
+
+// Run git status in each directory - to see what files have changed
+// Fail if any file other than go.sum has changed.
+// \todo check behaviour with git submodules
+async function checkGoSumOnly() {
+    let p = [];
+    core.debug(`git diff --name-only`);
+    let myOutput = '', myError='';
+    const options = { silent: true };
+    options.listeners = {
+        stdout: data => {
+            myOutput += data.toString();
+        },
+        stderr: data => {
+            myError += data.toString();
+        }
+    };
+    await exec.exec('git', ['diff', '--name-only'], options);
+    // break up the filenames in output by line
+    const diffs = myOutput.split("\n").filter(x => x.trim());
+    core.debug(`diffs=${diffs}`);
+    return diffs;
+}
+
+async function findDirectories(patterns) {
+    let dirs = new Set();
+    for (const p of patterns) {
+        let pat = p[0] != '-' ? p : p.substr(1);
+        let matches = new Set();
+        const globber = await glob.create(pat);
+        for await (const f of globber.globGenerator()) {
+            matches.add(path.dirname(f));
+        }
+        if (p[0] == '-') {
+            dirs = difference(dirs, matches);
+        } else {
+            dirs = union(dirs, matches);
+        }
+    }
+    return [...new Set(dirs)];
+}
+
+function union(setA, setB) {
+    let _union = new Set(setA);
+    for (let elem of setB) {
+        _union.add(elem);
+    }
+    return _union;
+}
+
+function difference(setA, setB) {
+    let _difference = new Set(setA);
+    for (let elem of setB) {
+        _difference.delete(elem);
+    }
+    return _difference;
+}
