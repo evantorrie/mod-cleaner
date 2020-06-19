@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const cli = require('@actions/cli');
+const exec = require('@actions/exec');
 const glob = require('@actions/glob');
 
 try {
@@ -22,7 +22,7 @@ try {
 }
 
 async function findFiles(patterns) {
-    for (const gomod of files) {
+    for (const gomod of patterns) {
         console.log(`gomod-pattern: ${gomod}`);
         const globber = await glob.create(gomod);
         const files = await globber.glob();
