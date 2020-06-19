@@ -1,10 +1,10 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: git-commit-and-push
+description: 'Git add go.sum, run a commmit and git push'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  files:  # id of input
+    description: 'List of files to check'
     required: true
-    default: 'World'
+    default: go.sum
 outputs:
   time: # id of output
     description: 'The time we greeted you'

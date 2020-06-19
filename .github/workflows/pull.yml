@@ -2,11 +2,13 @@ name: Mod the Hoople
 on:
   pull_request:
     types: [ opened, reopened, labeled ]
+  tags:
+    - dependencies
 
 jobs:
   mod_cleaner:
     runs-on: ubuntu-latest
-    name: A job to clean up go.mod/go.sum
+    name: A job to clean up go.sum
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
@@ -16,6 +18,17 @@ jobs:
       run: |
           go mod tidy
           git diff
+    - name: Dump Github context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+        HASHFILES: ${{ hashFiles('**/go.sum') }}
+      run: |
+        echo ${GITHUB_CONTEXT}
+        echo ${HASHFILES}
+    - name: my-test
+      run: |
+        echo ${GITHUB_ACTOR}
+        echo ${secrets.GITHUB_TOKEN}
     # Use the output from the `go-sum` step
     - name: Get the output time
       run: echo "The time was ${{ steps.go-sum.outputs.time }}"
