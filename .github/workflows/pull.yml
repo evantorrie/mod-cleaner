@@ -31,4 +31,5 @@ jobs:
       with:
         commit_message: Auto-fix go.sum changes
     - name: Show changes
-      run: echo "Changes detected: ${{ steps.auto-commit.outputs.changes_detected }}"
+      run: |
+        echo "Changes detected: ${{ steps.auto-commit.outputs.changes_detected }}"
