@@ -15,6 +15,9 @@ jobs:
     - name: mod-tidier
       uses:  ./.github/actions/tidysum/
       id: tidysum
+      input: |
+        go.mod
+        **/go.sum
     - name: go-sum
       run: |
           go mod tidy
@@ -30,7 +33,6 @@ jobs:
     - name: my-test
       run: |
         echo ${GITHUB_ACTOR}
-        echo ${GITHUB_TOKEN}
     # Use the output from the `go-sum` step
     - name: Get the output time
       run: echo "The time was ${{ steps.go-sum.outputs.time }}"
