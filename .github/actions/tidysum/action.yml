@@ -2,9 +2,13 @@ name: go-mod-tidier
 description: 'Run go mod tidy on one or more go.mod files'
 inputs:
   files:  # id of input
-    description: 'List of go.mod files to run go mod tidy on'
+    description: 'go.mod files to run go mod tidy. Can be glob patterns one per line'
     required: true
     default: go.mod
+  gosum_only:
+    description: 'fail if any files other than go.sum files are modified during tidy'
+    required: false
+    default: false
 outputs:
   changedfiles: # id of output
     description: 'List of files that were changed'
