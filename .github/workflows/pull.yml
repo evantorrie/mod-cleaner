@@ -6,15 +6,15 @@ on:
 jobs:
   mod_cleaner:
     runs-on: ubuntu-latest
-    name: A job to clean up go.sum
+    name: Clean up dependabot mods to go.sum files
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
       with:
         go-version: '^1.14.0'
     - name: mod-tidier
-      uses:  ./.github/actions/tidysum/
-      id: tidysum
+      uses:  ./.github/actions/modtidy/
+      id: modtidy
       with:
         files: '**/go.mod'
         gosum_only: true
