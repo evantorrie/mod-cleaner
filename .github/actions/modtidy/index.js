@@ -22,8 +22,8 @@ async function run() {
             console.log(f);
         }
         core.endGroup();
-        const gosum_only = core.getInput('gosum_only');
-        if (gosum_only) {
+        const gosum_only = core.getInput('gosum_only').toLowerCase();
+        if (gosum_only === 'true' || gosum_only === 'enabled') {
             // count number of files which end in go.sum
             let gosums = diffs.filter(s => s.endsWith('go.sum'));
             core.debug(`go.sums=${gosums}`);
