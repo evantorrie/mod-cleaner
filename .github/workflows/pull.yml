@@ -1,31 +1,29 @@
-name: Mod the Hoople
+name: Mod the Tidy
 on:
   pull_request:
-    types: [ opened, reopened, labeled, unlabeled, edited, synchronize ]
+    types: [ labeled, unlabeled ]
 
 jobs:
   mod_cleaner:
     runs-on: ubuntu-latest
     name: Clean up dependabot mods to go.sum files
     steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.head_ref }}
     - uses: actions/setup-go@v2
       with:
         go-version: '^1.14.0'
-    - name: mod-tidier
+    - name: mod-the-tidy
       uses:  ./.github/actions/modtidy/
       id: modtidy
       with:
         files: '**/go.mod'
         gosum_only: false
-    - name: go-sum
-      run: |
-          go mod tidy -v
-    - name: my-test
-      run: |
-        echo ${GITHUB_ACTOR}
     - name: auto-commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
