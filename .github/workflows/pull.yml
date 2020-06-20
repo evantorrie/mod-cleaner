@@ -1,7 +1,7 @@
 name: Mod the Tidy
 on:
   pull_request:
-    types: [ labeled, unlabeled ]
+    types: [ labeled ]
 
 jobs:
   mod_cleaner:
@@ -31,4 +31,4 @@ jobs:
         commit_message: Auto-fix go.sum changes caused by dependabot
     - name: Show changes
       run: |
-        echo "Changes detected: ${{ steps.auto-commit.autocommit.changes_detected }}"
+        echo "Changes detected: ${{ steps.autocommit.changes_detected }}"
