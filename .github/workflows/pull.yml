@@ -25,10 +25,11 @@ jobs:
       with:
         files: '**/go.mod'
         gosum_only: false
-    - name: auto-commit
+    - name: commit changes
+      id: autocommit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Auto-fix go.sum changes
+        commit_message: Auto-fix go.sum changes caused by dependabot
     - name: Show changes
       run: |
-        echo "Changes detected: ${{ steps.auto-commit.outputs.changes_detected }}"
+        echo "Changes detected: ${{ steps.auto-commit.autocommit.changes_detected }}"
