@@ -1,22 +1,15 @@
 # mod-cleaner
 
-Force a push.
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+Clean go modules
 
 ## Inputs
 
-### `who-to-greet`
+### `gomods`
 
-**Required** The name of the person to greet. Default `"World"`.
-
-## Outputs
-
-### `time`
-
-The time we greeted you.
+**Optional** glob pattern to match `go.mod` files to examine.
 
 ## Example usage
 
 uses: actions/mod-cleaner@v1
 with:
-  who-to-greet: 'Mona the Octocat'
+  gomods: 'go.mod'
