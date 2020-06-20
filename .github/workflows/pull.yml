@@ -19,12 +19,11 @@ jobs:
     - uses: actions/setup-go@v2
       with:
         go-version: '^1.14.0'
-    - name: mod-the-tidy
-      uses:  ./.github/actions/modtidy/
+    - uses:  ./.github/actions/modtidy/
       id: modtidy
       with:
         files: '**/go.mod'
-        gosum_only: false
+        gosum_only: true
     - name: commit changes
       id: autocommit
       uses: stefanzweifel/git-auto-commit-action@v4
