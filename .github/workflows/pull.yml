@@ -5,6 +5,7 @@ on:
 
 jobs:
   mod_cleaner:
+    if: ${{ github.event.label.name == 'dependencies' }}
     runs-on: ubuntu-latest
     name: Clean up dependabot mods to go.sum files
     steps:
