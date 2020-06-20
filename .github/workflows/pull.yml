@@ -31,4 +31,4 @@ jobs:
         commit_message: Auto-fix go.sum changes caused by dependabot
     - name: Show changes
       run: |
-        echo "Changes detected: ${{ steps.autocommit.changes_detected }}"
+        echo "Changes detected: ${{ steps.autocommit.outputs.changes_detected }}"
